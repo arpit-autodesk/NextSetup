@@ -12,25 +12,29 @@ const imageList = imageURL.map((url, index) => ({
 }));
 
 export default async function HomePage() {
-  const posts = await db.query.posts.findMany();
-  console.log(posts); 
+  const images = await db.query.images.findMany({
+    orderBy:(model, {asc}) => asc(model.id)
+  });
+  console.log(images); 
   return (
     <main className="">
     <div className="flex flex-wrap gap-4">
       {
-        posts.map(({ id, name }) => (
+        images.map(({ id, name,url }) => (
           <div key={id}>
        {id}.{name}
+       <img src={url} alt="" className="w-40 h-40 object-cover" />
           </div>
         ))
       
-      }{
+      }
+      {/* {
         imageList.map(({ id, url }) => (
           <div key={id}>
               <img src={url} alt="" className="w-40 h-40 object-cover" />
               </div>
         ))
-      }
+      } */}
     </div>
     </main>
   );
