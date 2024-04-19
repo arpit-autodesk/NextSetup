@@ -1,3 +1,4 @@
+import { SignedOut } from "@clerk/nextjs";
 import Link from "next/link";
 import { db } from "~/server/db";
 export const dynamic = "force-dynamic";
@@ -11,23 +12,32 @@ const imageList = imageURL.map((url, index) => ({
   url,
 }));
 
-export default async function HomePage() {
+async function Images() {
   const images = await db.query.images.findMany({
     orderBy:(model, {asc}) => asc(model.id)
   });
   console.log(images); 
   return (
+    images.map(({ id, name,url }) => (
+      <div key={id}>
+   {id}.{name}
+   <img src={url} alt="" className="w-40 h-40 object-cover" />
+      </div>
+    ))
+  )
+}
+
+export default async function HomePage() {
+
+  return (
     <main className="">
+      <SignedOut>
+        <div className="w-full h-full text-2xl ">
+          Please sign in above.
+        </div>
+      </SignedOut>
     <div className="flex flex-wrap gap-4">
-      {
-        images.map(({ id, name,url }) => (
-          <div key={id}>
-       {id}.{name}
-       <img src={url} alt="" className="w-40 h-40 object-cover" />
-          </div>
-        ))
-      
-      }
+    <Images/>
       {/* {
         imageList.map(({ id, url }) => (
           <div key={id}>
